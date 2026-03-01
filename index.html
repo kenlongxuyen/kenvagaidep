@@ -2,304 +2,248 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUCKYWIN MD5 - PRO INTERFACE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gái Đẹp Casino - Multi Game Hub</title>
     <style>
-        :root {
-            --gold-gradient: linear-gradient(180deg, #ffed8a 0%, #ffc107 50%, #c19100 100%);
-            --bg-dark: #0a0a0a;
-            --panel-bg: rgba(20, 20, 20, 0.9);
-            --red-win: #ff3e3e;
-        }
+        :root { --gold: #ffcc00; --red: #ff3333; --blue: #3498db; --bg: #0d0d0d; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; user-select: none; touch-action: none; overflow: hidden; }
+        
+        /* Header & Navigation */
+        .header { background: #000; width: 100%; padding: 15px 0; display: flex; justify-content: space-around; align-items: center; border-bottom: 2px solid var(--gold); z-index: 100; }
+        .menu-btn { font-size: 28px; cursor: pointer; color: var(--gold); }
+        .balance { font-size: 22px; color: var(--gold); font-weight: bold; text-shadow: 0 0 10px gold; }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background: url('https://img.freepik.com/free-vector/luxury-dark-red-gold-background_1017-23428.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
-            color: white;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+        /* Sidebar Menu */
+        #sidebar { position: fixed; top: 0; left: -100%; width: 250px; height: 100%; background: #111; z-index: 2000; transition: 0.3s; border-right: 2px solid var(--gold); padding: 20px; box-sizing: border-box; }
+        #sidebar.open { left: 0; }
+        .menu-title { color: white; font-size: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-bottom: 10px; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; color: var(--gold); font-weight: bold; font-size: 18px; }
+        .menu-close { position: absolute; top: 10px; right: 15px; font-size: 30px; color: white; }
 
-        /* Overlay làm tối nền để nổi bật UI */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: -1;
-        }
+        /* Game Screens */
+        .game-screen { display: none; flex-direction: column; align-items: center; width: 100vw; height: calc(100vh - 60px); padding-top: 20px; box-sizing: border-box; }
+        .active-game { display: flex; }
 
-        /* Container chính giống ảnh */
-        .game-container {
-            position: relative;
-            width: 1000px;
-            height: 600px;
-            display: flex;
-            gap: 20px;
-        }
+        /* Common Table Style */
+        .table { width: 95%; background: radial-gradient(circle, #1a2a3a, #000); border-radius: 30px; border: 3px solid #444; padding: 20px 0; display: flex; flex-direction: column; align-items: center; }
+        .chips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 90%; margin-top: 20px; }
+        .chip { height: 40px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; cursor: pointer; }
 
-        /* Bảng soi cầu bên trái */
-        .soi-cau-panel {
-            width: 300px;
-            background: var(--panel-bg);
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-        }
+        /* TÀI XỈU UI */
+        .bowl-wrap { position: relative; width: 200px; height: 200px; background: #111; border-radius: 50%; border: 8px solid #5d3a1a; display: flex; align-items: center; justify-content: center; margin: 15px 0; touch-action: none; }
+        #bowl { position: absolute; top: -5px; left: -5px; width: 210px; height: 210px; background: radial-gradient(circle, #ddd, #666); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #222; touch-action: none; }
+        .dice { width: 45px; height: 45px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: black; font-size: 35px; margin: 0 4px; }
 
-        .soi-cau-header {
-            color: #ffc107;
-            text-align: center;
-            font-weight: bold;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-        }
+        /* BACCARAT UI */
+        .bac-row { display: flex; justify-content: space-around; width: 100%; margin: 10px 0; }
+        .bac-box { width: 30%; padding: 15px 5px; border: 2px solid #555; border-radius: 10px; text-align: center; }
+        .bac-active { border-color: var(--gold); background: rgba(255,204,0,0.2); }
+        .card-area { display: flex; gap: 10px; font-size: 40px; margin-top: 10px; height: 60px; }
 
-        .grid-history {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
-        }
+        /* ĐÁ GÀ UI */
+        .ga-row { display: flex; justify-content: center; gap: 20px; width: 100%; margin-bottom: 20px; }
+        .ga-btn { width: 120px; height: 120px; border-radius: 20px; border: 4px solid #444; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .meron { background: #800; color: white; }
+        .wala { background: #004; color: white; }
+        .ga-active { border-color: var(--gold); transform: scale(1.05); }
 
-        .dot {
-            width: 18px; height: 18px;
-            border-radius: 50%;
-            border: 1px solid #555;
-        }
-        .dot.tai { background: #ff3e3e; box-shadow: 0 0 5px #ff3e3e; }
-        .dot.xiu { background: #eee; box-shadow: 0 0 5px #eee; }
-
-        /* Khung Tài Xỉu MD5 chính giữa */
-        .main-board {
-            flex: 1;
-            background: radial-gradient(circle, #4b0000 0%, #1a0000 100%);
-            border: 4px solid #7a5a1a;
-            border-radius: 150px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-
-        .md5-hash {
-            position: absolute;
-            bottom: 40px;
-            background: #000;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #00ff00;
-            border: 1px solid #333;
-        }
-
-        .timer-circle {
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            border: 8px solid #ffc107;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 48px;
-            font-weight: bold;
-            background: rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-        }
-
-        .bet-side {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-            width: 200px;
-        }
-        .side-tai { left: 40px; }
-        .side-xiu { right: 40px; }
-
-        .btn-bet {
-            background: var(--gold-gradient);
-            border: none;
-            padding: 10px 30px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 20px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .bet-amount {
-            color: #ffc107;
-            font-size: 22px;
-            margin-top: 10px;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        /* Lớp nặn xúc xắc */
-        #nan-overlay {
-            display: none;
-            position: absolute;
-            width: 200px; height: 200px;
-            background: url('https://img.freepik.com/free-photo/black-plate-texture_1203-34.jpg');
-            background-size: cover;
-            border-radius: 50%;
-            z-index: 100;
-            cursor: grab;
-            box-shadow: 0 0 20px black;
-            border: 2px solid #555;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-        }
-
-        .dice-result {
-            display: flex;
-            gap: 10px;
-            position: absolute;
-            z-index: 50;
-        }
-        .dice {
-            width: 40px; height: 40px;
-            background: white;
-            color: black;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        /* Nạp tiền */
-        .recharge-btn {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            background: #2ecc71;
-            padding: 15px; border-radius: 50%;
-            cursor: pointer;
-        }
+        .btn-action { background: linear-gradient(to bottom, #ffd700, #b8860b); border: none; padding: 15px 50px; border-radius: 30px; font-weight: bold; font-size: 20px; margin-top: 20px; color: #300; box-shadow: 0 5px 0 #664400; }
+        #win-txt { position: fixed; top: 40%; font-size: 60px; color: var(--gold); font-weight: bold; opacity: 0; pointer-events: none; z-index: 500; text-shadow: 0 0 20px #000; }
+        .fly { animation: fly 2s forwards; }
+        @keyframes fly { 0% { opacity:0; transform: translateY(0); } 20% { opacity:1; } 100% { opacity:0; transform: translateY(-150px); } }
+        .shake { animation: shakeAnim 0.1s infinite; }
+        @keyframes shakeAnim { 0% { transform: translate(3px,3px); } 50% { transform: translate(-3px,-3px); } 100% { transform: translate(3px,3px); } }
     </style>
 </head>
 <body>
 
-<div class="overlay"></div>
+    <audio id="s-shake" src="https://www.soundjay.com/misc/sounds/dice-shake-1.mp3"></audio>
+    <audio id="s-win" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
-<div class="game-container">
-    <div class="soi-cau-panel">
-        <div class="soi-cau-header">THẦN TÀI - LỊCH SỬ</div>
-        <div class="grid-history" id="history-grid">
+    <div id="sidebar">
+        <div class="menu-close" onclick="toggleMenu()">✖</div>
+        <div class="menu-title">DANH MỤC GAME</div>
+        <div class="menu-item" onclick="switchGame('taixiu')">🎲 TÀI XỈU MD5</div>
+        <div class="menu-item" onclick="switchGame('baccarat')">🃏 BACCARAT VIP</div>
+        <div class="menu-item" onclick="switchGame('daga')">🐓 ĐÁ GÀ SV388</div>
+        <div class="menu-item" style="color: #777;">🔥 NỔ HŨ (SOON)</div>
+    </div>
+
+    <div class="header">
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <div class="balance">💰 <span id="money">1,000,000</span></div>
+    </div>
+
+    <div id="win-txt">+0</div>
+
+    <div id="taixiu" class="game-screen active-game">
+        <div class="table">
+            <div style="display:flex; justify-content: space-around; width: 100%;">
+                <div id="tx-xiu" onclick="setSide('xiu')" style="font-size: 40px; font-weight:900;">XỈU</div>
+                <div id="tx-tai" onclick="setSide('tai')" style="font-size: 40px; font-weight:900; color:var(--red);">TÀI</div>
             </div>
-        <div class="soi-cau-header" style="margin-top:20px">MD5 HASH</div>
-        <div style="font-size: 10px; word-break: break-all; color: #888;" id="current-md5">...</div>
+            <div class="bowl-wrap">
+                <div id="bowl">NHẤN LẮC</div>
+                <div style="display:flex;"><div id="d1" class="dice">⚀</div><div id="d2" class="dice">⚁</div><div id="d3" class="dice">⚂</div></div>
+            </div>
+            <div style="color:var(--gold)">Cược: <span id="tx-bet">0</span></div>
+        </div>
+        <div class="chips" id="tx-chips"></div>
+        <button class="btn-action" onclick="playTaiXiu()">LẮC XÍ NGẦU</button>
     </div>
 
-    <div class="main-board">
-        <div class="bet-side side-tai">
-            <h1 style="font-size: 60px; margin:0">TÀI</h1>
-            <div class="bet-amount" id="total-tai">125,450,000</div>
-            <button class="btn-bet">CƯỢC</button>
+    <div id="baccarat" class="game-screen">
+        <div class="table">
+            <div class="bac-row">
+                <div id="bac-player" class="bac-box" onclick="setSide('player')"><b style="color:var(--blue)">PLAYER</b><br><span id="p-score">0</span></div>
+                <div id="bac-tie" class="bac-box" onclick="setSide('tie')"><b>TIE (x8)</b></div>
+                <div id="bac-banker" class="bac-box" onclick="setSide('banker')"><b style="color:var(--red)">BANKER</b><br><span id="b-score">0</span></div>
+            </div>
+            <div style="display:flex; gap:30px;">
+                <div class="card-area" id="p-cards"></div>
+                <div class="card-area" id="b-cards"></div>
+            </div>
+            <div style="color:var(--gold); margin-top:10px;">Cược: <span id="bac-bet">0</span></div>
         </div>
-
-        <div class="timer-circle" id="main-timer">60</div>
-        
-        <div class="dice-result" id="dice-area">
-            <div class="dice" id="d1">?</div>
-            <div class="dice" id="d2">?</div>
-            <div class="dice" id="d3">?</div>
-        </div>
-        <div id="nan-overlay">KÉO ĐỂ NẶN</div>
-
-        <div class="bet-side side-xiu">
-            <h1 style="font-size: 60px; margin:0">XỈU</h1>
-            <div class="bet-amount" id="total-xiu">98,210,000</div>
-            <button class="btn-bet">CƯỢC</button>
-        </div>
-
-        <div class="md5-hash">Chuỗi MD5: <span id="md5-display">6dfb6010...ccda725c</span></div>
+        <div class="chips" id="bac-chips"></div>
+        <button class="btn-action" onclick="playBaccarat()">CHIA BÀI</button>
     </div>
-</div>
 
-<div class="recharge-btn" onclick="let n = prompt('Nhập số tiền:'); if(n) alert('Đã nạp ' + n);">💰</div>
+    <div id="daga" class="game-screen">
+        <div class="table">
+            <div class="ga-row">
+                <div id="ga-meron" class="ga-btn meron" onclick="setSide('meron')"><b>MERON</b><br>ĐỎ</div>
+                <div id="ga-wala" class="ga-btn wala" onclick="setSide('wala')"><b>WALA</b><br>XANH</div>
+            </div>
+            <div id="ga-arena" style="font-size: 50px;">🥊</div>
+            <div style="color:var(--gold); margin-top:10px;">Cược: <span id="ga-bet">0</span></div>
+        </div>
+        <div class="chips" id="ga-chips"></div>
+        <button class="btn-action" onclick="playDaGa()">VÀO TRẬN</button>
+    </div>
 
 <script>
-    const timerEl = document.getElementById('main-timer');
-    const nanOverlay = document.getElementById('nan-overlay');
-    const historyGrid = document.getElementById('history-grid');
-    
-    let history = ['tai', 'xiu', 'tai', 'tai', 'xiu', 'xiu', 'tai']; // Demo
-    let isNanning = false;
+    let bal = 1000000, currentBet = 0, side = null, state = 'wait', curGame = 'taixiu';
+    const diceIcons = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+    const cardIcons = ['🂡','🂢','🂣','🂤','🂥','🂦','🂧','🂨','🂩','🂪','🂫','🂭','🂮'];
+    const amts = [1000, 10000, 100000, 1000000, 10000000];
 
-    // Hàm giả lập kết quả ĐỒNG BỘ theo phút (2 người vào cùng lúc sẽ thấy kết quả giống nhau)
-    function getSyncResult() {
-        const now = new Date();
-        const seed = now.getMinutes() + now.getHours(); // Tạo seed chung
-        const d1 = (seed % 6) + 1;
-        const d2 = ((seed * 2) % 6) + 1;
-        const d3 = ((seed * 3) % 6) + 1;
-        return [d1, d2, d3];
-    }
-
-    function renderHistory() {
-        historyGrid.innerHTML = history.map(h => `<div class="dot ${h}"></div>`).join('');
-    }
-
-    function updateGame() {
-        const now = new Date();
-        const seconds = now.getSeconds();
-        const remaining = 60 - seconds;
-
-        timerEl.innerText = remaining;
-
-        // Khi thời gian dưới 5 giây: Chuẩn bị mở bát
-        if (remaining <= 5 && remaining > 0) {
-            nanOverlay.style.display = 'flex';
-            const res = getSyncResult();
-            document.getElementById('d1').innerText = res[0];
-            document.getElementById('d2').innerText = res[1];
-            document.getElementById('d3').innerText = res[2];
-        } 
-        
-        // Khi hết thời gian: Reset phiên mới
-        if (remaining === 0 || remaining > 55) {
-            nanOverlay.style.display = 'none';
-            nanOverlay.style.opacity = '1';
-            document.getElementById('d1').innerText = '?';
-            document.getElementById('d2').innerText = '?';
-            document.getElementById('d3').innerText = '?';
-            
-            // Cập nhật soi cầu phiên vừa xong
-            if (remaining === 59) {
-                const res = getSyncResult();
-                const total = res[0] + res[1] + res[2];
-                history.push(total >= 11 ? 'tai' : 'xiu');
-                if(history.length > 40) history.shift();
-                renderHistory();
-            }
-        }
-        
-        // Giả lập tiền cược nhảy liên tục cho sinh động
-        document.getElementById('total-tai').innerText = (Math.floor(Math.random() * 500) + 100) + ",000,000";
-        document.getElementById('total-xiu').innerText = (Math.floor(Math.random() * 500) + 100) + ",000,000";
-    }
-
-    // Xử lý nặn bằng cách kéo/click
-    nanOverlay.addEventListener('mousedown', function() {
-        this.style.transition = '2s';
-        this.style.opacity = '0';
-        setTimeout(() => { this.style.display = 'none'; }, 2000);
+    // Khởi tạo chips cho cả 3 game
+    ['tx', 'bac', 'ga'].forEach(id => {
+        const box = document.getElementById(id + '-chips');
+        amts.forEach(a => {
+            let d = document.createElement('div');
+            d.className = 'chip'; d.style.background = '#34495e';
+            d.innerText = a >= 1000000 ? (a/1000000)+'M' : (a/1000)+'K';
+            d.onclick = () => { if(state==='wait' && bal>=a) { currentBet+=a; bal-=a; updateUI(); } };
+            box.appendChild(d);
+        });
     });
 
-    renderHistory();
-    setInterval(updateGame, 1000);
-</script>
+    function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+    
+    function switchGame(g) {
+        curGame = g; state = 'wait'; currentBet = 0; side = null;
+        document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active-game'));
+        document.getElementById(g).classList.add('active-game');
+        toggleMenu();
+        updateUI();
+    }
 
+    function setSide(s) {
+        if(state!=='wait') return;
+        side = s;
+        document.querySelectorAll('.side, .bac-box, .ga-btn').forEach(x => x.classList.remove('bac-active','ga-active','active-side'));
+        const el = document.getElementById(curGame==='taixiu' ? 'tx-'+s : (curGame==='baccarat' ? 'bac-'+s : 'ga-'+s));
+        if(el) el.classList.add(curGame==='taixiu' ? 'active-side' : (curGame==='baccarat' ? 'bac-active' : 'ga-active'));
+    }
+
+    function updateUI() {
+        document.getElementById('money').innerText = bal.toLocaleString();
+        document.getElementById(curGame.substring(0,2) + (curGame==='daga'?'ga':'') + '-bet').innerText = currentBet.toLocaleString();
+    }
+
+    // --- LOGIC TÀI XỈU ---
+    function playTaiXiu() {
+        if(state!=='wait' || currentBet===0 || !side) return;
+        state = 'shake'; document.getElementById('s-shake').play();
+        const b = document.getElementById('bowl'); b.classList.add('shake'); b.innerText = "LỘC CỘC...";
+        setTimeout(() => {
+            b.classList.remove('shake'); b.innerText = "NẶN ĐI!"; state = 'nan';
+            let r1 = Math.floor(Math.random()*6)+1, r2 = Math.floor(Math.random()*6)+1, r3 = Math.floor(Math.random()*6)+1;
+            window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
+            window.winAmt = (r1===r2 && r2===r3) ? currentBet*5 : currentBet*1.95;
+            document.getElementById('d1').innerText = diceIcons[r1];
+            document.getElementById('d2').innerText = icons[r2]; // fix lẹ
+            document.getElementById('d1').innerText = diceIcons[r1]; document.getElementById('d2').innerText = diceIcons[r2]; document.getElementById('d3').innerText = diceIcons[r3];
+        }, 1200);
+    }
+
+    // --- LOGIC BACCARAT ---
+    function playBaccarat() {
+        if(state!=='wait' || currentBet===0 || !side) return;
+        state = 'playing';
+        let p1 = Math.floor(Math.random()*13), p2 = Math.floor(Math.random()*13);
+        let b1 = Math.floor(Math.random()*13), b2 = Math.floor(Math.random()*13);
+        
+        const getVal = (v) => (v+1) >= 10 ? 0 : (v+1);
+        let pScore = (getVal(p1) + getVal(p2)) % 10;
+        let bScore = (getVal(b1) + getVal(b2)) % 10;
+
+        document.getElementById('p-cards').innerHTML = cardIcons[p1] + cardIcons[p2];
+        document.getElementById('b-cards').innerHTML = cardIcons[b1] + cardIcons[b2];
+        document.getElementById('p-score').innerText = pScore;
+        document.getElementById('b-score').innerText = bScore;
+
+        let res = pScore > bScore ? 'player' : (bScore > pScore ? 'banker' : 'tie');
+        let multi = res === 'tie' ? 8 : (res === 'banker' ? 1.95 : 2);
+        
+        if(side === res) {
+            bal += currentBet * multi;
+            showWin(currentBet * multi);
+        }
+        setTimeout(() => { state='wait'; currentBet=0; updateUI(); }, 3000);
+    }
+
+    // --- LOGIC ĐÁ GÀ ---
+    function playDaGa() {
+        if(state!=='wait' || currentBet===0 || !side) return;
+        state = 'fighting';
+        const arena = document.getElementById('ga-arena');
+        arena.classList.add('shake'); arena.innerText = "🐓 VS 🐓";
+        setTimeout(() => {
+            arena.classList.remove('shake');
+            let res = Math.random() > 0.5 ? 'meron' : 'wala';
+            arena.innerText = res === 'meron' ? "ĐỎ THẮNG! 🏆" : "XANH THẮNG! 🏆";
+            if(side === res) {
+                bal += currentBet * 1.95;
+                showWin(currentBet * 1.95);
+            }
+            setTimeout(() => { state='wait'; currentBet=0; arena.innerText="🥊"; updateUI(); }, 3000);
+        }, 2000);
+    }
+
+    // Nặn Tài Xỉu (Touch)
+    const bowl = document.getElementById('bowl');
+    let sX, sY;
+    bowl.addEventListener('touchstart', (e) => { if(state==='nan'){ sX=e.touches[0].clientX; sY=e.touches[0].clientY; e.preventDefault();} }, {passive:false});
+    bowl.addEventListener('touchmove', (e) => {
+        if(state!=='nan') return; e.preventDefault();
+        let dx = e.touches[0].clientX-sX, dy = e.touches[0].clientY-sY;
+        bowl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/5}deg)`;
+        if(Math.abs(dx)>130 || Math.abs(dy)>130) {
+            state='end'; bowl.style.display='none';
+            if(side===window.res) { bal += window.winAmt; showWin(window.winAmt); }
+            setTimeout(() => { bowl.style.display='flex'; bowl.style.transform='translate(0,0)'; bowl.innerText='NHẤN LẮC'; state='wait'; currentBet=0; updateUI(); }, 3500);
+        }
+    }, {passive:false});
+
+    function showWin(a) {
+        document.getElementById('s-win').play();
+        let t = document.getElementById('win-txt');
+        t.innerText = "+" + a.toLocaleString(); t.classList.add('fly');
+        setTimeout(() => t.classList.remove('fly'), 2000);
+    }
+</script>
 </body>
 </html>
