@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gái Đẹp Casino - Tài Xỉu MD5</title>
+    <title>Gái Đẹp Casino - Cấp Vốn Đại Gia</title>
     <style>
         :root { --gold: #ffcc00; --red: #ff3333; --bg: #0d0d0d; }
         body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; user-select: none; touch-action: manipulation; overflow-x: hidden; }
@@ -22,8 +22,15 @@
         #bowl { position: absolute; top: -5px; left: -5px; width: 230px; height: 230px; background: radial-gradient(circle, #ddd, #666); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #222; font-size: 18px; box-shadow: 0 10px 20px #000; }
         .chips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 95%; margin-top: 15px; }
         .chip { height: 45px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; color: #fff; cursor: pointer; }
+        .c-active { transform: scale(1.1); border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
         .c-1k { background: #3498db; } .c-100k { background: #e74c3c; } .c-50m { background: #000; color: gold; border-color: gold; }
         .btn-lắc { background: linear-gradient(to bottom, #ffd700, #b8860b); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 20px; margin-top: 15px; box-shadow: 0 5px 0 #664400; color: #300; }
+        
+        /* Bảng cấp tiền khi hết xu */
+        #alo-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .alo-card { background: #222; padding: 30px; border-radius: 20px; border: 2px solid var(--gold); text-align: center; }
+        .alo-btn { background: var(--gold); color: #000; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; font-size: 18px; margin-top: 20px; cursor: pointer; }
+        
         #win-txt { position: fixed; top: 40%; font-size: 60px; color: var(--gold); font-weight: bold; opacity: 0; pointer-events: none; z-index: 100; text-shadow: 0 0 20px #000; }
         .fly { animation: fly 2s forwards; }
         @keyframes fly { 0% { opacity:0; transform: translateY(0); } 20% { opacity:1; } 100% { opacity:0; transform: translateY(-150px); } }
@@ -34,6 +41,15 @@
 <body>
     <audio id="s-shake" src="https://www.soundjay.com/misc/sounds/dice-shake-1.mp3"></audio>
     <audio id="s-win" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+    <div id="alo-overlay">
+        <div class="alo-card">
+            <h2 style="color: var(--gold);">HẾT XU RỒI GÁI ĐẸP ƠI!</h2>
+            <p>Bấm nút bên dưới để "alo" mình cấp vốn nhé.</p>
+            <button class="alo-btn" onclick="capTin()">ALO CẤP TIỀN NGAY 💰</button>
+        </div>
+    </div>
+
     <div class="header"><div class="balance">💰 <span id="money">1,000,000</span></div></div>
     <div id="win-txt">+0</div>
     <div class="table">
@@ -56,30 +72,71 @@
         <div class="chips" id="chip-box"></div>
     </div>
     <button class="btn-lắc" onclick="shakeGame()">LẮC XÚC XẮC</button>
+
 <script>
     let bal = 1000000, bet = 0, side = null, state = 'wait';
     const icons = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
     const amts = [1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000, 50000000];
+    
     const cb = document.getElementById('chip-box');
     amts.forEach(a => {
         let d = document.createElement('div');
         d.className = 'chip c-1k';
         d.innerText = a >= 1000000 ? (a/1000000)+'M' : (a/1000)+'K';
-        d.onclick = () => { if(state==='wait' && bal>=a) { bet+=a; bal-=a; update(); } };
+        d.onclick = () => { 
+            if(state==='wait' && bal>=a) { 
+                bet+=a; bal-=a; update(); 
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('c-active'));
+                d.classList.add('c-active');
+            } 
+        };
         cb.appendChild(d);
     });
-    function selectSide(s) { if(state==='wait') { side = s; document.getElementById('side-tai').classList.remove('active-side'); document.getElementById('side-xiu').classList.remove('active-side'); document.getElementById('side-'+s).classList.add('active-side'); update(); } }
-    function update() { document.getElementById('money').innerText = bal.toLocaleString(); document.getElementById('b-tai').innerText = (side==='tai' ? bet.toLocaleString() : "0"); document.getElementById('b-xiu').innerText = (side==='xiu' ? bet.toLocaleString() : "0"); }
+
+    function selectSide(s) { 
+        if(state==='wait') { 
+            side = s; 
+            document.getElementById('side-tai').classList.remove('active-side');
+            document.getElementById('side-xiu').classList.remove('active-side');
+            document.getElementById('side-'+s).classList.add('active-side');
+            update(); 
+        } 
+    }
+
+    function update() {
+        document.getElementById('money').innerText = bal.toLocaleString();
+        document.getElementById('b-tai').innerText = (side==='tai' ? bet.toLocaleString() : "0");
+        document.getElementById('b-xiu').innerText = (side==='xiu' ? bet.toLocaleString() : "0");
+        
+        // Kiểm tra hết tiền
+        if(bal < 1000 && bet === 0 && state === 'wait') {
+            document.getElementById('alo-overlay').style.display = 'flex';
+        }
+    }
+
+    function capTin() {
+        bal = 1000000;
+        document.getElementById('alo-overlay').style.display = 'none';
+        update();
+    }
+
     function shakeGame() {
         if(state!=='wait' || bet===0 || !side) return;
-        state = 'shake'; document.getElementById('s-shake').play().catch(()=>{});
+        state = 'shake';
+        document.getElementById('s-shake').play().catch(()=>{});
         const b = document.getElementById('bowl'); b.classList.add('shaking'); b.innerText = "LỘC CỘC...";
-        setTimeout(() => { b.classList.remove('shaking'); b.innerText = "NẶN ĐI!"; state = 'nan';
+        setTimeout(() => {
+            b.classList.remove('shaking'); b.innerText = "NẶN ĐI!";
+            state = 'nan';
             let r1 = Math.floor(Math.random()*6)+1, r2 = Math.floor(Math.random()*6)+1, r3 = Math.floor(Math.random()*6)+1;
-            window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu'; window.win = bet * 1.95;
-            document.getElementById('d1').innerText = icons[r1]; document.getElementById('d2').innerText = icons[r2]; document.getElementById('d3').innerText = icons[r3];
+            window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
+            window.win = bet * 1.95;
+            document.getElementById('d1').innerText = icons[r1];
+            document.getElementById('d2').innerText = icons[r2];
+            document.getElementById('d3').innerText = icons[r3];
         }, 1200);
     }
+
     const b = document.getElementById('bowl');
     let sX, sY;
     b.addEventListener('touchstart', (e) => { if(state==='nan') { sX = e.touches[0].clientX; sY = e.touches[0].clientY; } });
@@ -89,11 +146,27 @@
         b.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/5}deg)`;
         if(Math.abs(dx)>120 || Math.abs(dy)>120) reveal();
     });
-    function reveal() { state = 'end'; b.style.display = 'none';
-        if(side === window.res) { document.getElementById('s-win').play().catch(()=>{}); let a = document.getElementById('win-txt'); a.innerText = "+" + window.win.toLocaleString(); a.classList.add('fly'); bal += window.win; }
+
+    function reveal() {
+        state = 'end'; b.style.display = 'none';
+        if(side === window.res) {
+            document.getElementById('s-win').play().catch(()=>{});
+            let a = document.getElementById('win-txt');
+            a.innerText = "+" + window.win.toLocaleString();
+            a.classList.add('fly');
+            bal += window.win;
+        }
         setTimeout(reset, 3500);
     }
-    function reset() { b.style.display = 'flex'; b.style.transform = 'translate(0,0)'; b.innerText = 'NHẤN LẮC'; state = 'wait'; bet = 0; side = null; document.getElementById('win-txt').classList.remove('fly'); document.getElementById('side-tai').classList.remove('active-side'); document.getElementById('side-xiu').classList.remove('active-side'); update(); }
+
+    function reset() {
+        b.style.display = 'flex'; b.style.transform = 'translate(0,0)';
+        b.innerText = 'NHẤN LẮC'; state = 'wait'; bet = 0; side = null;
+        document.getElementById('win-txt').classList.remove('fly');
+        document.getElementById('side-tai').classList.remove('active-side');
+        document.getElementById('side-xiu').classList.remove('active-side');
+        update();
+    }
 </script>
 </body>
 </html>
