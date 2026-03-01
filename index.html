@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gái Đẹp Casino - Fix Cược</title>
+    <title>Gái Đẹp Casino - Save Progress</title>
     <style>
         :root { --gold: #ffcc00; --red: #ff3333; --blue: #3498db; --bg: #0d0d0d; }
         body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; user-select: none; touch-action: none; overflow: hidden; }
@@ -22,14 +22,12 @@
         .table { width: 95%; background: radial-gradient(circle, #1a2a3a, #000); border-radius: 30px; border: 3px solid #444; padding: 20px 0; display: flex; flex-direction: column; align-items: center; }
         .chips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 90%; margin-top: 15px; }
         .chip { height: 42px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; cursor: pointer; color: #fff; background: #34495e; }
-        .chip:active { transform: scale(0.9); }
 
         /* Tài Xỉu UI */
         .bowl-wrap { position: relative; width: 200px; height: 200px; background: #111; border-radius: 50%; border: 8px solid #5d3a1a; display: flex; align-items: center; justify-content: center; margin: 15px 0; }
         #bowl { position: absolute; top: -5px; left: -5px; width: 210px; height: 210px; background: radial-gradient(circle, #ddd, #666); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #222; }
         .dice { width: 45px; height: 45px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: black; font-size: 35px; margin: 0 4px; }
 
-        /* Common Win Style */
         .active-side { border: 3px solid var(--gold) !important; background: rgba(255, 204, 0, 0.2) !important; }
         .btn-action { background: linear-gradient(to bottom, #ffd700, #b8860b); border: none; padding: 12px 60px; border-radius: 30px; font-weight: bold; font-size: 18px; margin-top: 15px; color: #300; box-shadow: 0 4px 0 #664400; }
         
@@ -50,6 +48,7 @@
         <div class="menu-item" onclick="switchGame('taixiu')">🎲 TÀI XỈU MD5</div>
         <div class="menu-item" onclick="switchGame('baccarat')">🃏 BACCARAT VIP</div>
         <div class="menu-item" onclick="switchGame('daga')">🐓 ĐÁ GÀ</div>
+        <div class="menu-item" onclick="clearData()" style="color: #e74c3c; margin-top: 50px;">🗑️ XÓA HẾT DỮ LIỆU</div>
     </div>
 
     <div id="alo-overlay">
@@ -61,7 +60,7 @@
 
     <div class="header">
         <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <div class="balance">💰 <span id="money">1,000,000</span></div>
+        <div class="balance">💰 <span id="money">0</span></div>
     </div>
 
     <div id="win-txt">+0</div>
@@ -110,26 +109,30 @@
     </div>
 
 <script>
-    let bal = 1000000, currentBet = 0, side = null, state = 'wait', curGame = 'taixiu';
+    // --- KHỞI TẠO DỮ LIỆU TỪ STORAGE ---
+    let bal = localStorage.getItem('casino_bal') ? parseInt(localStorage.getItem('casino_bal')) : 1000000;
+    let currentBet = 0, side = null, state = 'wait', curGame = 'taixiu';
     const diceIcons = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
     const amts = [1000, 10000, 100000, 1000000, 10000000];
+
+    function saveData() { localStorage.setItem('casino_bal', bal); }
 
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
     function switchGame(g) { 
         curGame = g; resetSession();
         document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active-game'));
         document.getElementById(g).classList.add('active-game');
-        toggleMenu(); updateUI();
+        if(document.getElementById('sidebar').classList.contains('open')) toggleMenu(); 
+        updateUI();
     }
 
-    // Khởi tạo Chip cho từng game
     ['tx','bc','dg'].forEach(id => {
         const box = document.getElementById(id+'-chips');
         amts.forEach(a => {
             let d = document.createElement('div'); d.className = 'chip';
             d.innerText = a >= 1000000 ? (a/1000000)+'M' : (a/1000)+'K';
             d.onclick = () => { 
-                if(state === 'wait' && side && bal >= a) { bal -= a; currentBet += a; updateUI(); }
+                if(state === 'wait' && side && bal >= a) { bal -= a; currentBet += a; saveData(); updateUI(); }
                 else if(!side) alert("Gái đẹp chọn bên cược trước nhé!");
             };
             box.appendChild(d);
@@ -141,19 +144,22 @@
         side = s;
         document.querySelectorAll('[id^="tx-"],[id^="bc-"],[id^="dg-"]').forEach(el => el.classList.remove('active-side'));
         const prefix = curGame === 'taixiu' ? 'tx-' : (curGame === 'baccarat' ? 'bc-' : 'dg-');
-        document.getElementById(prefix + s).classList.add('active-side');
+        const target = document.getElementById(prefix + s);
+        if(target) target.classList.add('active-side');
     }
 
     function updateUI() {
         document.getElementById('money').innerText = bal.toLocaleString();
         const prefix = curGame === 'taixiu' ? 'tx' : (curGame === 'baccarat' ? 'bc' : 'dg');
-        document.getElementById(prefix + '-bet-val').innerText = currentBet.toLocaleString();
+        const betEl = document.getElementById(prefix + '-bet-val');
+        if(betEl) betEl.innerText = currentBet.toLocaleString();
+        
         if(bal < 1000 && currentBet === 0) document.getElementById('alo-overlay').style.display = 'flex';
     }
 
-    function capTin() { bal = 1000000; document.getElementById('alo-overlay').style.display = 'none'; updateUI(); }
+    function capTin() { bal = 1000000; saveData(); document.getElementById('alo-overlay').style.display = 'none'; updateUI(); }
+    function clearData() { if(confirm("Xóa hết tiền về 0 luôn hả gái đẹp?")) { localStorage.clear(); location.reload(); } }
 
-    // --- LOGIC GAME ---
     function playTaiXiu() {
         if(state !== 'wait' || !side || currentBet === 0) return;
         state = 'shake'; document.getElementById('s-shake').play();
@@ -175,7 +181,7 @@
         let p = Math.floor(Math.random()*10), b = Math.floor(Math.random()*10);
         document.getElementById('bc-cards').innerText = p + " 🆚 " + b;
         let res = p > b ? 'player' : (b > p ? 'banker' : 'tie');
-        if(side === res) { let w = res === 'tie' ? currentBet*8 : currentBet*1.95; bal += w; showWin(w); }
+        if(side === res) { let w = res === 'tie' ? currentBet*8 : currentBet*1.95; bal += w; saveData(); showWin(w); }
         setTimeout(resetSession, 3000);
     }
 
@@ -188,12 +194,11 @@
             arena.classList.remove('shaking');
             let res = Math.random() > 0.5 ? 'meron' : 'wala';
             arena.innerText = res.toUpperCase() + " THẮNG!";
-            if(side === res) { let w = currentBet*1.95; bal += w; showWin(w); }
+            if(side === res) { let w = currentBet*1.95; bal += w; saveData(); showWin(w); }
             setTimeout(() => { arena.innerText = "🥊"; resetSession(); }, 2500);
         }, 2000);
     }
 
-    // --- NẶN TÀI XỈU ---
     const bBowl = document.getElementById('bowl');
     let sX, sY;
     bBowl.addEventListener('touchstart', (e) => { if(state==='nan'){ sX=e.touches[0].clientX; sY=e.touches[0].clientY; e.preventDefault(); } }, {passive:false});
@@ -203,7 +208,7 @@
         bBowl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/5}deg)`;
         if(Math.abs(dx)>130 || Math.abs(dy)>130) {
             state='end'; bBowl.style.display='none';
-            if(side===window.res) { bal += window.win; showWin(window.win); }
+            if(side===window.res) { bal += window.win; saveData(); showWin(window.win); }
             setTimeout(() => { bBowl.style.display='flex'; bBowl.style.transform='translate(0,0)'; bBowl.innerText='NHẤN LẮC'; resetSession(); }, 3000);
         }
     }, {passive:false});
@@ -220,6 +225,9 @@
         document.querySelectorAll('.active-side').forEach(el => el.classList.remove('active-side'));
         updateUI();
     }
+    
+    // Chạy UI lần đầu
+    updateUI();
 </script>
 </body>
 </html>
