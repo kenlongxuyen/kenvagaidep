@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gái Đẹp Casino - Tài Xỉu MD5</title>
+    <style>
+        :root { --gold: #ffcc00; --red: #ff3333; --bg: #0d0d0d; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; user-select: none; touch-action: manipulation; overflow-x: hidden; }
+        .header { background: #000; width: 100%; padding: 15px 0; text-align: center; border-bottom: 2px solid var(--gold); }
+        .balance { font-size: 26px; color: var(--gold); font-weight: bold; text-shadow: 0 0 10px gold; }
+        .table { margin-top: 20px; display: flex; flex-direction: column; align-items: center; width: 95%; background: radial-gradient(circle, #1a2a3a, #000); padding: 20px 0; border-radius: 30px; border: 3px solid #444; }
+        .bet-row { display: flex; justify-content: space-around; width: 100%; }
+        .side { text-align: center; width: 45%; border-radius: 15px; padding: 10px; border: 2px solid transparent; }
+        .active-side { border-color: var(--gold); background: rgba(255, 204, 0, 0.2); }
+        .side-title { font-size: 45px; font-weight: 900; }
+        .tai { color: var(--red); } .xiu { color: #fff; }
+        .bet-status { background: rgba(0,0,0,0.6); border: 1px solid var(--gold); padding: 5px; border-radius: 8px; font-size: 18px; margin-top: 5px; color: var(--gold); height: 25px; line-height: 25px; }
+        .bowl-wrap { position: relative; width: 220px; height: 220px; background: #111; border-radius: 50%; border: 8px solid #5d3a1a; display: flex; align-items: center; justify-content: center; margin: 20px 0; }
+        .dice-wrap { display: flex; gap: 8px; }
+        .dice { width: 50px; height: 50px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: black; font-size: 40px; }
+        #bowl { position: absolute; top: -5px; left: -5px; width: 230px; height: 230px; background: radial-gradient(circle, #ddd, #666); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #222; font-size: 18px; box-shadow: 0 10px 20px #000; }
+        .chips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 95%; margin-top: 15px; }
+        .chip { height: 45px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; color: #fff; cursor: pointer; }
+        .c-1k { background: #3498db; } .c-100k { background: #e74c3c; } .c-50m { background: #000; color: gold; border-color: gold; }
+        .btn-lắc { background: linear-gradient(to bottom, #ffd700, #b8860b); border: none; padding: 15px 60px; border-radius: 30px; font-weight: bold; font-size: 20px; margin-top: 15px; box-shadow: 0 5px 0 #664400; color: #300; }
+        #win-txt { position: fixed; top: 40%; font-size: 60px; color: var(--gold); font-weight: bold; opacity: 0; pointer-events: none; z-index: 100; text-shadow: 0 0 20px #000; }
+        .fly { animation: fly 2s forwards; }
+        @keyframes fly { 0% { opacity:0; transform: translateY(0); } 20% { opacity:1; } 100% { opacity:0; transform: translateY(-150px); } }
+        .shaking { animation: shake 0.1s infinite; }
+        @keyframes shake { 0% { transform: translate(3px,3px); } 50% { transform: translate(-3px,-3px); } 100% { transform: translate(3px,3px); } }
+    </style>
+</head>
+<body>
+    <audio id="s-shake" src="https://www.soundjay.com/misc/sounds/dice-shake-1.mp3"></audio>
+    <audio id="s-win" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+    <div class="header"><div class="balance">💰 <span id="money">1,000,000</span></div></div>
+    <div id="win-txt">+0</div>
+    <div class="table">
+        <div class="bet-row">
+            <div class="side" id="side-xiu" onclick="selectSide('xiu')">
+                <div class="side-title xiu">XỈU</div>
+                <div class="bet-status" id="b-xiu">0</div>
+            </div>
+            <div class="side" id="side-tai" onclick="selectSide('tai')">
+                <div class="side-title tai">TÀI</div>
+                <div class="bet-status" id="b-tai">0</div>
+            </div>
+        </div>
+        <div class="bowl-wrap">
+            <div id="bowl">NHẤN LẮC</div>
+            <div class="dice-wrap">
+                <div class="dice" id="d1">⚀</div><div class="dice" id="d2">⚁</div><div class="dice" id="d3">⚂</div>
+            </div>
+        </div>
+        <div class="chips" id="chip-box"></div>
+    </div>
+    <button class="btn-lắc" onclick="shakeGame()">LẮC XÚC XẮC</button>
+<script>
+    let bal = 1000000, bet = 0, side = null, state = 'wait';
+    const icons = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+    const amts = [1000, 5000, 10000, 50000, 100000, 500000, 1000000, 5000000, 10000000, 50000000];
+    const cb = document.getElementById('chip-box');
+    amts.forEach(a => {
+        let d = document.createElement('div');
+        d.className = 'chip c-1k';
+        d.innerText = a >= 1000000 ? (a/1000000)+'M' : (a/1000)+'K';
+        d.onclick = () => { if(state==='wait' && bal>=a) { bet+=a; bal-=a; update(); } };
+        cb.appendChild(d);
+    });
+    function selectSide(s) { if(state==='wait') { side = s; document.getElementById('side-tai').classList.remove('active-side'); document.getElementById('side-xiu').classList.remove('active-side'); document.getElementById('side-'+s).classList.add('active-side'); update(); } }
+    function update() { document.getElementById('money').innerText = bal.toLocaleString(); document.getElementById('b-tai').innerText = (side==='tai' ? bet.toLocaleString() : "0"); document.getElementById('b-xiu').innerText = (side==='xiu' ? bet.toLocaleString() : "0"); }
+    function shakeGame() {
+        if(state!=='wait' || bet===0 || !side) return;
+        state = 'shake'; document.getElementById('s-shake').play().catch(()=>{});
+        const b = document.getElementById('bowl'); b.classList.add('shaking'); b.innerText = "LỘC CỘC...";
+        setTimeout(() => { b.classList.remove('shaking'); b.innerText = "NẶN ĐI!"; state = 'nan';
+            let r1 = Math.floor(Math.random()*6)+1, r2 = Math.floor(Math.random()*6)+1, r3 = Math.floor(Math.random()*6)+1;
+            window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu'; window.win = bet * 1.95;
+            document.getElementById('d1').innerText = icons[r1]; document.getElementById('d2').innerText = icons[r2]; document.getElementById('d3').innerText = icons[r3];
+        }, 1200);
+    }
+    const b = document.getElementById('bowl');
+    let sX, sY;
+    b.addEventListener('touchstart', (e) => { if(state==='nan') { sX = e.touches[0].clientX; sY = e.touches[0].clientY; } });
+    b.addEventListener('touchmove', (e) => {
+        if(state!=='nan') return;
+        let dx = e.touches[0].clientX - sX, dy = e.touches[0].clientY - sY;
+        b.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/5}deg)`;
+        if(Math.abs(dx)>120 || Math.abs(dy)>120) reveal();
+    });
+    function reveal() { state = 'end'; b.style.display = 'none';
+        if(side === window.res) { document.getElementById('s-win').play().catch(()=>{}); let a = document.getElementById('win-txt'); a.innerText = "+" + window.win.toLocaleString(); a.classList.add('fly'); bal += window.win; }
+        setTimeout(reset, 3500);
+    }
+    function reset() { b.style.display = 'flex'; b.style.transform = 'translate(0,0)'; b.innerText = 'NHẤN LẮC'; state = 'wait'; bet = 0; side = null; document.getElementById('win-txt').classList.remove('fly'); document.getElementById('side-tai').classList.remove('active-side'); document.getElementById('side-xiu').classList.remove('active-side'); update(); }
+</script>
+</body>
+</html>
