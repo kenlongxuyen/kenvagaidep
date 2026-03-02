@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gái Đẹp Casino - Compact SicBo</title>
+    <title>Casino chú bé - Compact SicBo</title>
     <style>
         :root { --gold: #ffcc00; --red: #ff3333; --blue: #3498db; --bg: #0d0d0d; --green: #2ecc71; }
         body { background: var(--bg); color: white; font-family: 'Arial', sans-serif; margin: 0; padding: 0; user-select: none; touch-action: none; overflow: hidden; height: 100vh; display: flex; flex-direction: column; align-items: center; }
@@ -12,7 +12,6 @@
         .top-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
         .balance { font-size: 16px; color: var(--gold); font-weight: bold; text-shadow: 0 0 5px gold; }
 
-        /* Sidebar Menu */
         #sidebar { position: fixed; top: 0; left: -100%; width: 200px; height: 100%; background: #111; z-index: 2000; transition: 0.3s; border-right: 2px solid var(--gold); padding: 15px; box-sizing: border-box; }
         #sidebar.open { left: 0; }
         .menu-item { padding: 12px; border-bottom: 1px solid #333; cursor: pointer; color: var(--gold); font-weight: bold; font-size: 14px; }
@@ -20,7 +19,6 @@
         .game-screen { display: none; flex-direction: column; align-items: center; width: 100vw; max-width: 380px; padding-top: 5px; }
         .active-game { display: flex; }
 
-        /* Bảng Soi Cầu Grid Compact */
         .history-grid { width: 92%; background: #222; border-radius: 6px; margin-bottom: 8px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; padding: 4px; border: 1px solid #444; }
         .dot { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
         .dot-tai { background: var(--red); } .dot-xiu { background: var(--blue); }
@@ -30,11 +28,9 @@
 
         .table { width: 92%; background: radial-gradient(circle, #1a2a3a, #000); border-radius: 15px; border: 2px solid #444; padding: 10px 0; display: flex; flex-direction: column; align-items: center; position: relative; }
         
-        /* Cửa đặt cược compact */
         .bet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 90%; }
         .bet-side { text-align: center; padding: 5px; border-radius: 10px; border: 1px solid transparent; }
         .side-name { font-size: 24px; font-weight: 900; }
-        .side-total { font-size: 9px; color: var(--gold); }
         .active-side { background: rgba(255, 204, 0, 0.2); border-color: var(--gold); }
         .glow-win { animation: pulse 0.5s infinite alternate; color: white !important; }
         @keyframes pulse { from { text-shadow: 0 0 2px #fff; } to { text-shadow: 0 0 15px white; transform: scale(1.05); } }
@@ -42,13 +38,7 @@
         .bowl-wrap { position: relative; width: 140px; height: 140px; background: #111; border-radius: 50%; border: 6px solid #5d3a1a; display: flex; align-items: center; justify-content: center; margin: 10px 0; }
         .dice { width: 32px; height: 32px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: black; font-size: 24px; margin: 0 2px; }
         
-        #bowl { 
-            position: absolute; top: -4px; left: -4px; width: 148px; height: 148px; 
-            background: radial-gradient(circle, #eee, #999, #333); border-radius: 50%; 
-            z-index: 10; display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; color: #222; font-size: 12px; box-shadow: 0 5px 15px #000;
-            touch-action: none; 
-        }
+        #bowl { position: absolute; top: -4px; left: -4px; width: 148px; height: 148px; background: radial-gradient(circle, #eee, #999, #333); border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #222; font-size: 12px; box-shadow: 0 5px 15px #000; touch-action: none; }
 
         .chips { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; width: 95%; margin-top: 10px; }
         .chip { height: 30px; border-radius: 12px; border: 1px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 9px; cursor: pointer; color: #fff; background: #34495e; }
@@ -84,25 +74,22 @@
         <div class="timer-box" id="timer">60</div>
         <div class="md5-txt">MD5: 22603021182...JVWvHg8PJR...</div>
         <div class="history-grid" id="tx-hist"></div>
-
         <div class="table">
             <div class="bet-grid">
                 <div id="tx-side-xiu" class="bet-side" onclick="setSide('xiu')">
                     <div class="side-name" style="color:var(--blue)">XỈU</div>
-                    <div class="side-total" id="tx-total-xiu">1.25B</div>
+                    <div id="tx-total-xiu" style="font-size:9px; color:var(--gold);">1.25B</div>
                 </div>
                 <div id="tx-side-tai" class="bet-side" onclick="setSide('tai')">
                     <div class="side-name" style="color:var(--red)">TÀI</div>
-                    <div class="side-total" id="tx-total-tai">1.10B</div>
+                    <div id="tx-total-tai" style="font-size:9px; color:var(--gold);">1.10B</div>
                 </div>
             </div>
-
             <div class="bowl-wrap">
                 <div id="bowl">ĐANG CƯỢC</div>
                 <div style="display:flex;"><div id="d1" class="dice">?</div><div id="d2" class="dice">?</div><div id="d3" class="dice">?</div></div>
             </div>
-            
-            <div style="color:var(--gold); font-size:12px;">Cược của Quỳnh Nga: <span id="tx-my-bet">0</span></div>
+            <div style="color:var(--gold); font-size:11px;">Cược của chú bé: <span id="tx-my-bet">0</span></div>
         </div>
         <div class="chips" id="tx-chips"></div>
     </div>
@@ -112,18 +99,14 @@
         <div class="history-grid" id="sb-hist"></div>
         <div class="table">
             <div class="bet-grid">
-                <div id="sb-side-le" class="bet-side" onclick="setSide('le')">
-                    <div class="side-name" style="color:#eee">LẺ</div>
-                </div>
-                <div id="sb-side-chan" class="bet-side" onclick="setSide('chan')">
-                    <div class="side-name" style="color:#eee">CHẴN</div>
-                </div>
+                <div id="sb-side-le" class="bet-side" onclick="setSide('le')"><div class="side-name">LẺ</div></div>
+                <div id="sb-side-chan" class="bet-side" onclick="setSide('chan')"><div class="side-name">CHẴN</div></div>
             </div>
             <div class="bowl-wrap">
                 <div id="sb-bowl">ĐANG CƯỢC</div>
                 <div style="display:flex;"><div id="sd1" class="dice">?</div><div id="sd2" class="dice">?</div><div id="sd3" class="dice">?</div></div>
             </div>
-            <div style="color:var(--gold); font-size:12px;">Cược: <span id="sb-my-bet">0</span></div>
+            <div style="color:var(--gold); font-size:11px;">Cược: <span id="sb-my-bet">0</span></div>
         </div>
         <div class="chips" id="sb-chips"></div>
     </div>
@@ -140,14 +123,9 @@
         const rem = 60 - sec;
         const timerID = curG === 'taixiu' ? 'timer' : 'sb-timer';
         document.getElementById(timerID).innerText = rem < 10 ? "0" + rem : rem;
-
-        if (sec < 50) {
-            if (state !== 'betting') reset();
-        } else if (sec >= 50 && sec < 57) {
-            if (state === 'betting') startAnim();
-        } else if (sec >= 57) {
-            if (state === 'playing') forceOpen();
-        }
+        if (sec < 50) { if (state !== 'betting') reset(); } 
+        else if (sec >= 50 && sec < 57) { if (state === 'betting') startAnim(); } 
+        else if (sec >= 57) { if (state === 'playing') forceOpen(); }
     }
     setInterval(sync, 1000);
 
@@ -157,14 +135,9 @@
         const now = new Date();
         const seed = now.getHours() + now.getMinutes();
         let r1 = (seed % 6)+1, r2 = ((seed*7)%6)+1, r3 = ((seed*13)%6)+1;
-        
-        if(curG === 'taixiu') {
-            window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
-        } else {
-            window.res = (r1+r2+r3) % 2 !== 0 ? 'le' : 'chan';
-        }
+        if(curG === 'taixiu') window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
+        else window.res = (r1+r2+r3) % 2 !== 0 ? 'le' : 'chan';
         window.winVal = (r1===r2 && r2===r3) ? bet*5 : bet*1.95;
-
         const prefix = curG === 'taixiu' ? 'd' : 'sd';
         document.getElementById(prefix+'1').innerText = dIcons[r1];
         document.getElementById(prefix+'2').innerText = dIcons[r2];
@@ -172,10 +145,7 @@
         document.getElementById(curG === 'taixiu' ? 'bowl' : 'sb-bowl').innerText = "NẶN ĐI!";
     }
 
-    function forceOpen() { 
-        document.getElementById(curG === 'taixiu' ? 'bowl' : 'sb-bowl').style.display = 'none'; 
-        finish(); 
-    }
+    function forceOpen() { document.getElementById(curG === 'taixiu' ? 'bowl' : 'sb-bowl').style.display = 'none'; finish(); }
 
     function finish() {
         if(state !== 'playing') return;
@@ -199,7 +169,6 @@
         updateUI();
     }
 
-    // --- NẶN MOBILE ---
     function initNan(bowlID) {
         const bEl = document.getElementById(bowlID);
         let sX, sY;
@@ -213,16 +182,15 @@
     }
     initNan('bowl'); initNan('sb-bowl');
 
-    // --- UI & CƯỢC ---
     function napTuyChon() {
-        let val = prompt("Quỳnh Nga muốn nạp bao nhiêu xu?");
+        let val = prompt("chú bé muốn nạp bao nhiêu xu?");
         if(val && !isNaN(val)) { bal += parseInt(val); updateUI(); localStorage.setItem('casino_bal', bal); }
     }
     function setSide(s) { if(new Date().getSeconds()<50) { side=s; document.querySelectorAll('.bet-side').forEach(el=>el.classList.remove('active-side')); document.getElementById((curG==='taixiu'?'tx-side-':'sb-side-')+s).classList.add('active-side'); } }
     function updateUI() { document.getElementById('money').innerText = bal.toLocaleString(); document.getElementById(curG==='taixiu'?'tx-my-bet':'sb-my-bet').innerText = bet.toLocaleString(); }
     function renderHist() {
         const box = document.getElementById(curG==='taixiu'?'tx-hist':'sb-hist'); if(!box) return; box.innerHTML = "";
-        const data = curG === 'taixiu' ? historyTX : []; // Sicbo placeholder
+        const data = curG === 'taixiu' ? historyTX : [];
         data.slice(-20).forEach(r => { let d = document.createElement('div'); d.className = `dot dot-${r}`; d.innerText = r.substring(0,1).toUpperCase(); box.appendChild(d); });
     }
 
