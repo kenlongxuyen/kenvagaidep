@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gái Đẹp Casino - All In & Friends</title>
+    <title>Casino Gái Đẹp - Tiến Lên Nhất Ăn Tất</title>
     <style>
         :root { --gold: #ffcc00; --red: #ff3333; --blue: #3498db; --bg: #0d0d0d; --green: #2ecc71; --table: #006633; }
         body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; user-select: none; touch-action: none; overflow: hidden; height: 100vh; }
@@ -19,19 +19,20 @@
         .menu-item { padding: 15px; border-bottom: 1px solid #333; cursor: pointer; color: var(--gold); font-weight: bold; }
 
         /* Game Screens */
-        .game-screen { display: none; flex-direction: column; align-items: center; width: 100vw; height: calc(100vh - 100px); padding-top: 10px; }
+        .game-screen { display: none; flex-direction: column; align-items: center; width: 100vw; height: calc(100vh - 100px); padding-top: 5px; }
         .active-game { display: flex; }
 
         /* TIẾN LÊN UI */
-        .tl-setup { background: #222; padding: 10px; border-radius: 15px; border: 1px solid var(--gold); margin-bottom: 10px; width: 90%; display: flex; flex-direction: column; gap: 8px; }
-        .tl-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-        .tl-input { background: #333; border: 1px solid #555; color: white; padding: 5px; width: 100px; text-align: center; border-radius: 5px; }
-        .tl-table { width: 95%; height: 220px; background: radial-gradient(circle, var(--table), #003311); border-radius: 50% / 20%; border: 4px solid #5d3a1a; position: relative; display: flex; justify-content: center; align-items: center; margin-top: 5px; }
-        .hand { display: flex; gap: -20px; justify-content: center; width: 90%; }
-        .card { width: 40px; height: 60px; background: white; border-radius: 4px; border: 1px solid #999; color: black; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-left: -18px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        .tl-setup { background: #222; padding: 8px; border-radius: 15px; border: 1px solid var(--gold); margin-bottom: 5px; width: 92%; display: flex; flex-direction: column; gap: 5px; }
+        .tl-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .tl-input { background: #333; border: 1px solid #555; color: white; padding: 4px; width: 85px; text-align: center; border-radius: 5px; }
+        
+        .tl-table { width: 96%; height: 230px; background: radial-gradient(circle, var(--table), #003311); border-radius: 50% / 15%; border: 4px solid #5d3a1a; position: relative; display: flex; justify-content: center; align-items: center; }
+        .hand { display: flex; gap: -20px; justify-content: center; width: 95%; position: absolute; bottom: 15px; }
+        .card { width: 38px; height: 58px; background: white; border-radius: 4px; border: 1px solid #999; color: black; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-left: -15px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
         .card-red { color: var(--red); }
 
-        /* TÀI XỈU UI (CƠ CẤU CŨ) */
+        /* TÀI XỈU UI */
         .timer-box { font-size: 32px; font-weight: bold; color: var(--gold); margin-bottom: 10px; text-shadow: 0 0 15px orange; }
         .table { width: 95%; background: radial-gradient(circle, #1a2a3a, #000); border-radius: 25px; border: 3px solid #444; padding: 15px 0; display: flex; flex-direction: column; align-items: center; position: relative; }
         .bowl-wrap { position: relative; width: 180px; height: 180px; background: #111; border-radius: 50%; border: 8px solid #5d3a1a; display: flex; align-items: center; justify-content: center; margin: 10px 0; }
@@ -41,7 +42,6 @@
         .chips { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; width: 95%; margin-top: 10px; }
         .chip { height: 35px; border-radius: 20px; border: 1px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; cursor: pointer; color: #fff; background: #34495e; }
         .btn-allin { background: linear-gradient(to bottom, #ff0000, #990000) !important; color: white !important; }
-        
         .active-side { border: 3px solid var(--gold) !important; background: rgba(255, 204, 0, 0.2) !important; }
         
         #win-txt { position: fixed; top: 40%; font-size: 60px; color: var(--gold); font-weight: bold; opacity: 0; pointer-events: none; z-index: 500; text-shadow: 0 0 20px #000; }
@@ -65,16 +65,36 @@
         <div class="top-row">
             <div onclick="toggleMenu()" style="font-size:28px; color:var(--gold);">☰</div>
             <div class="balance">💰 <span id="money">0</span></div>
-            <div style="display:flex; gap:5px;">
-                <button class="chip" style="background:var(--green); color:black; padding:0 10px;" onclick="napTien()">NẠP</button>
-                <button class="chip" style="background:var(--red); padding:0 10px;" onclick="switchGame('taixiu')">HỦY</button>
-            </div>
+            <button class="chip" style="background:var(--green); color:black; padding:0 10px; width:70px;" onclick="napTien()">NẠP</button>
         </div>
     </div>
 
     <div id="win-txt">+0</div>
 
-    <div id="taixiu" class="game-screen active-game">
+    <div id="tienlen" class="game-screen active-game">
+        <div class="tl-setup">
+            <div class="tl-row"><span>ID PHÒNG:</span><input type="text" id="tl-id" class="tl-input" value="GAIDEP88" onchange="dealCards()"></div>
+            <div class="tl-row"><span>CƯỢC BÀN:</span><input type="number" id="tl-bet-limit" class="tl-input" value="500000"></div>
+            <div class="tl-row"><span>SỐ NGƯỜI:</span>
+                <select id="tl-players" class="tl-input" onchange="dealCards()">
+                    <option value="4">4 Người</option>
+                    <option value="3">3 Người</option>
+                    <option value="2">2 Người</option>
+                </select>
+            </div>
+        </div>
+        <div class="tl-table">
+            <p id="tl-status" style="font-size:11px; opacity:0.6; position:absolute; top:10px;">ĐANG ĐỢI...</p>
+            <div class="hand" id="player-hand"></div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="chip" style="background:var(--red); width:130px; height:50px; font-size:15px;" onclick="tlFinish('lose')">BÁO THUA</button>
+            <button class="chip" style="background:var(--green); color:black; width:130px; height:50px; font-size:15px;" onclick="tlFinish('win')">TỚI NHẤT</button>
+        </div>
+        <p style="font-size:10px; color:#888; margin-top:10px;">Người chơi đầu tiên hết bài sẽ gom hết bạc trong bàn!</p>
+    </div>
+
+    <div id="taixiu" class="game-screen">
         <div class="timer-box" id="timer">60</div>
         <div class="table">
             <div style="display:flex; width:100%; justify-content:space-around;">
@@ -90,73 +110,19 @@
         <div class="chips" id="tx-chips"></div>
     </div>
 
-    <div id="tienlen" class="game-screen">
-        <div class="tl-setup">
-            <div class="tl-row"><span>MÃ PHÒNG (ID):</span><input type="text" id="tl-id" class="tl-input" value="GAIDEP88" onchange="dealCards()"></div>
-            <div class="tl-row"><span>CƯỢC BÀN:</span><input type="number" id="tl-bet-limit" class="tl-input" value="500000"></div>
-        </div>
-        <div class="tl-table">
-            <p id="tl-status" style="font-size:12px; opacity:0.6;">ĐANG CHỜ BẠN BÈ...</p>
-            <div class="hand" id="player-hand" style="position:absolute; bottom:20px;"></div>
-        </div>
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="chip" style="background:var(--red); width:120px; height:45px; font-size:14px;" onclick="tlFinish('lose')">BÁO THUA</button>
-            <button class="chip" style="background:var(--green); color:black; width:120px; height:45px; font-size:14px;" onclick="tlFinish('win')">TỚI NHẤT</button>
-        </div>
-        <p style="font-size:10px; color:#888; margin-top:10px;">Nhập cùng ID và mức cược để chơi chung ván bài!</p>
-    </div>
-
     <div id="baccarat" class="game-screen"><h2>🃏 BACCARAT VIP ĐANG TẢI...</h2></div>
 
 <script>
     let bal = localStorage.getItem('casino_bal') ? parseInt(localStorage.getItem('casino_bal')) : 1000000;
-    let currentBet = 0, side = null, state = 'wait', curGame = 'taixiu';
+    let currentBet = 0, side = null, state = 'wait', curGame = 'tienlen';
     const diceIcons = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
     const cardSuits = ['♠', '♣', '♦', '♥'];
     const cardRanks = ['3','4','5','6','7','8','9','10','J','Q','K','A','2'];
 
-    // --- ĐỒNG BỘ TÀI XỈU 60S ---
-    function syncServer() {
-        const now = new Date();
-        const seconds = now.getSeconds();
-        const rem = 60 - seconds;
-        document.getElementById('timer').innerText = rem < 10 ? "0" + rem : rem;
-        
-        if (seconds < 50) {
-            if (state !== 'wait') resetTX();
-            document.getElementById('bowl').innerText = "CƯỢC ĐI!";
-        } else if (seconds >= 50 && seconds < 60) {
-            if (state === 'wait') startTXAnimation();
-            document.getElementById('bowl').innerText = "NẶN ĐI!";
-        }
-    }
-    setInterval(syncServer, 1000);
-
-    function startTXAnimation() {
-        state = 'playing';
-        document.getElementById('s-shake').play();
-        const now = new Date();
-        const seed = now.getHours() + now.getMinutes();
-        let r1 = (seed % 6)+1, r2 = ((seed*7)%6)+1, r3 = ((seed*13)%6)+1;
-        window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
-        window.winAmt = (r1===r2 && r2===r3) ? currentBet*5 : currentBet*1.95;
-        document.getElementById('d1').innerText = diceIcons[r1];
-        document.getElementById('d2').innerText = diceIcons[r2];
-        document.getElementById('d3').innerText = diceIcons[r3];
-    }
-
-    function resetTX() {
-        state = 'wait'; currentBet = 0; side = null;
-        document.getElementById('bowl').style.display = 'flex';
-        document.getElementById('bowl').style.transform = 'translate(0,0)';
-        document.querySelectorAll('.dice').forEach(d => d.innerText = "?");
-        document.querySelectorAll('.active-side').forEach(el => el.classList.remove('active-side'));
-        updateUI();
-    }
-
     // --- TIẾN LÊN MIỀN NAM LOGIC ---
     function dealCards() {
         const id = document.getElementById('tl-id').value;
+        const numPlayers = parseInt(document.getElementById('tl-players').value);
         let seed = 0; for(let i=0; i<id.length; i++) seed += id.charCodeAt(i);
         
         let deck = [];
@@ -168,33 +134,81 @@
             [deck[i], deck[j]] = [deck[j], deck[i]];
         }
         
-        const myHand = deck.slice(0, 13).sort((a,b) => cardRanks.indexOf(a.r) - cardRanks.indexOf(b.r));
+        // Bài của bạn luôn là bộ bài cuối cùng tùy theo số người chơi
+        const myHand = deck.slice((numPlayers-1)*13, numPlayers*13).sort((a,b) => cardRanks.indexOf(a.r) - cardRanks.indexOf(b.r));
         const handDiv = document.getElementById('player-hand');
         handDiv.innerHTML = "";
         myHand.forEach(c => {
             let div = document.createElement('div');
             div.className = `card ${['♦','♥'].includes(c.s) ? 'card-red' : ''}`;
-            div.innerHTML = `<div>${c.r}</div><div style="font-size:20px">${c.s}</div>`;
+            div.innerHTML = `<div>${c.r}</div><div style="font-size:18px">${c.s}</div>`;
             handDiv.appendChild(div);
         });
-        document.getElementById('tl-status').innerText = "VÁN BÀI: #" + seed;
+        document.getElementById('tl-status').innerText = "PHÒNG " + numPlayers + " NGƯỜI - VÁN #" + seed;
     }
     function pseudoRandom(s) { var x = Math.sin(s) * 10000; return x - Math.floor(x); }
 
     function tlFinish(type) {
-        let bet = parseInt(document.getElementById('tl-bet-limit').value);
-        if (bal < bet) return alert("Hết xu rồi gái đẹp ơi, nạp thêm đi!");
+        let betPerPerson = parseInt(document.getElementById('tl-bet-limit').value);
+        let numPlayers = parseInt(document.getElementById('tl-players').value);
         
         if (type === 'win') {
-            let win = bet * 3; // Thắng gom cả bàn (ví dụ bàn 4 người)
-            bal += win;
-            showWin(win);
+            let winAmount = betPerPerson * (numPlayers - 1); // Gom hết bạc của những người còn lại
+            bal += winAmount;
+            showWin(winAmount);
         } else {
-            bal -= bet;
-            alert("Đã trừ " + bet.toLocaleString() + " xu. Thua keo này ta bày keo khác!");
+            if (bal < betPerPerson) return alert("Hết xu để đền bài rồi gái đẹp ơi!");
+            bal -= betPerPerson;
+            alert("Đã thua " + betPerPerson.toLocaleString() + " xu cho người tới nhất!");
         }
         updateUI();
-        dealCards(); // Chia ván mới
+        dealCards(); // Sang ván mới
+    }
+
+    // --- ĐỒNG BỘ TÀI XỈU 60S (CHẠY NGẦM) ---
+    function syncServer() {
+        const now = new Date();
+        const seconds = now.getSeconds();
+        const rem = 60 - seconds;
+        const timerEl = document.getElementById('timer');
+        if(timerEl) timerEl.innerText = rem < 10 ? "0" + rem : rem;
+        
+        if (seconds < 50) {
+            if (state !== 'wait') resetTX();
+        } else if (seconds >= 50 && seconds < 60) {
+            if (state === 'wait') startTXAnimation();
+        }
+    }
+    setInterval(syncServer, 1000);
+
+    function startTXAnimation() {
+        state = 'playing';
+        document.getElementById('s-shake').play().catch(()=>{});
+        const now = new Date();
+        const seed = now.getHours() + now.getMinutes();
+        let r1 = (seed % 6)+1, r2 = ((seed*7)%6)+1, r3 = ((seed*13)%6)+1;
+        window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
+        window.winAmt = (r1===r2 && r2===r3) ? currentBet*5 : currentBet*1.95;
+        const d1 = document.getElementById('d1');
+        if(d1) {
+            document.getElementById('d1').innerText = diceIcons[r1];
+            document.getElementById('d2').innerText = diceIcons[r2];
+            document.getElementById('d3').innerText = diceIcons[r3];
+            document.getElementById('bowl').innerText = "NẶN ĐI!";
+        }
+    }
+
+    function resetTX() {
+        state = 'wait'; currentBet = 0; side = null;
+        const bowl = document.getElementById('bowl');
+        if(bowl) {
+            bowl.style.display = 'flex';
+            bowl.style.transform = 'translate(0,0)';
+            bowl.innerText = "CƯỢC ĐI!";
+            document.querySelectorAll('.dice').forEach(d => d.innerText = "?");
+            document.querySelectorAll('.active-side').forEach(el => el.classList.remove('active-side'));
+        }
+        updateUI();
     }
 
     // --- CHIPS & NAVIGATION ---
@@ -212,27 +226,29 @@
     function setSide(s) { if(new Date().getSeconds() < 50) { side = s; document.querySelectorAll('[id^="tx-"]').forEach(el => el.classList.remove('active-side')); document.getElementById('tx-'+s).classList.add('active-side'); } }
     function switchGame(g) { curGame = g; toggleMenu(); document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active-game')); document.getElementById(g).classList.add('active-game'); if(g==='tienlen') dealCards(); }
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
-    function updateUI() { document.getElementById('money').innerText = bal.toLocaleString(); document.getElementById('tx-bet-val').innerText = currentBet.toLocaleString(); localStorage.setItem('casino_bal', bal); }
+    function updateUI() { document.getElementById('money').innerText = bal.toLocaleString(); const el = document.getElementById('tx-bet-val'); if(el) el.innerText = currentBet.toLocaleString(); localStorage.setItem('casino_bal', bal); }
     function napTien() { bal += 1000000; updateUI(); }
-    function showWin(a) { document.getElementById('s-win').play(); let t = document.getElementById('win-txt'); t.innerText = "+" + a.toLocaleString(); t.classList.add('fly'); setTimeout(() => t.classList.remove('fly'), 2000); }
-    function resetAllData() { if(confirm("Xóa trắng dữ liệu?")) { localStorage.clear(); location.reload(); } }
+    function showWin(a) { document.getElementById('s-win').play().catch(()=>{}); let t = document.getElementById('win-txt'); t.innerText = "+" + a.toLocaleString(); t.classList.add('fly'); setTimeout(() => t.classList.remove('fly'), 2000); }
+    function resetAllData() { if(confirm("Xóa hết dữ liệu?")) { localStorage.clear(); location.reload(); } }
 
     // Logic Nặn Tài Xỉu (Touch)
     const bBowl = document.getElementById('bowl');
     let sX, sY;
-    bBowl.addEventListener('touchstart', (e) => { if(state==='playing'){ sX=e.touches[0].clientX; sY=e.touches[0].clientY; e.preventDefault(); } }, {passive:false});
-    bBowl.addEventListener('touchmove', (e) => {
-        if(state!=='playing') return;
-        let dx = e.touches[0].clientX-sX, dy = e.touches[0].clientY-sY;
-        bBowl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/5}deg)`;
-        if(Math.abs(dx)>130 || Math.abs(dy)>130) {
-            state = 'end'; bBowl.style.display='none';
-            if(side===window.res) { bal += window.winAmt; showWin(window.winAmt); }
-            updateUI();
-        }
-    }, {passive:false});
+    if(bBowl) {
+        bBowl.addEventListener('touchstart', (e) => { if(state==='playing'){ sX=e.touches[0].clientX; sY=e.touches[0].clientY; e.preventDefault(); } }, {passive:false});
+        bBowl.addEventListener('touchmove', (e) => {
+            if(state!=='playing') return;
+            let dx = e.touches[0].clientX-sX, dy = e.touches[0].clientY-sY;
+            bBowl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/5}deg)`;
+            if(Math.abs(dx)>130 || Math.abs(dy)>130) {
+                state = 'end'; bBowl.style.display='none';
+                if(side===window.res) { bal += window.winAmt; showWin(window.winAmt); }
+                updateUI();
+            }
+        }, {passive:false});
+    }
 
-    updateUI(); syncServer();
+    updateUI(); syncServer(); dealCards();
 </script>
 </body>
 </html>
