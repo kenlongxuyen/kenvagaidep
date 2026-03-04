@@ -3,50 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Casino chú bé - Hardcore MD5</title>
+    <title>Casino chú bé - Professional Edition</title>
     <style>
         :root { --gold: #ffcc00; --red: #ff3333; --blue: #3498db; --bg: #0d0d0d; --green: #2ecc71; }
         body { background: var(--bg); color: white; font-family: 'Arial', sans-serif; margin: 0; padding: 0; user-select: none; touch-action: none; overflow: hidden; height: 100vh; display: flex; flex-direction: column; align-items: center; }
         
-        .header { background: #111; width: 100%; padding: 8px 0; border-bottom: 1px solid var(--gold); z-index: 100; }
+        .header { background: #111; width: 100%; padding: 6px 0; border-bottom: 1px solid var(--gold); z-index: 100; }
         .top-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
-        .balance { font-size: 16px; color: var(--gold); font-weight: bold; text-shadow: 0 0 5px gold; }
+        .balance { font-size: 18px; color: var(--gold); font-weight: bold; text-shadow: 0 0 5px gold; }
 
-        .game-screen { display: none; flex-direction: column; align-items: center; width: 100vw; max-width: 380px; padding-top: 5px; }
-        .active-game { display: flex; }
+        .game-screen { display: flex; flex-direction: column; align-items: center; width: 100vw; max-width: 380px; padding-top: 5px; }
 
         .history-grid { width: 92%; background: #222; border-radius: 6px; margin-bottom: 8px; display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; padding: 4px; border: 1px solid #444; }
         .dot { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
         .dot-tai { background: var(--red); } .dot-xiu { background: var(--blue); }
 
         .timer-box { font-size: 26px; font-weight: 900; color: var(--gold); text-shadow: 0 0 10px orange; margin-bottom: 5px; }
-        .md5-txt { font-size: 8px; color: #555; width: 80%; text-align: center; overflow: hidden; margin-bottom: 8px; }
-
+        
         .table { width: 92%; background: radial-gradient(circle, #1a2a3a, #000); border-radius: 15px; border: 2px solid #444; padding: 10px 0; display: flex; flex-direction: column; align-items: center; position: relative; }
         
-        .bet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 90%; }
         .bet-side { text-align: center; padding: 5px; border-radius: 10px; border: 1px solid transparent; transition: 0.2s; }
-        .side-name { font-size: 26px; font-weight: 900; }
+        .side-name { font-size: 28px; font-weight: 900; }
         .active-side { background: rgba(255, 204, 0, 0.2); border-color: var(--gold); }
         .glow-win { animation: pulse 0.4s infinite alternate; }
-        @keyframes pulse { from { text-shadow: 0 0 2px #fff; } to { text-shadow: 0 0 20px var(--gold); transform: scale(1.1); } }
+        @keyframes pulse { from { text-shadow: 0 0 2px #fff; } to { text-shadow: 0 0 20px var(--gold); transform: scale(1.05); } }
 
         .bowl-wrap { position: relative; width: 150px; height: 150px; background: #111; border-radius: 50%; border: 6px solid #5d3a1a; display: flex; align-items: center; justify-content: center; margin: 10px 0; }
         .dice { width: 34px; height: 34px; background: white; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: black; font-size: 26px; margin: 0 2px; }
         
-        /* Hiệu ứng nhảy 3 nhịp */
-        .dice-jump { animation: jump3Step 1.2s ease-in-out forwards; }
-        @keyframes jump3Step {
-            0%, 20%, 40% { transform: translateY(0) rotate(0); }
-            10%, 30%, 50% { transform: translateY(-30px) rotate(45deg); }
-            100% { transform: translateY(0) rotate(720deg); }
+        /* HIỆU ỨNG LẮC 3 NHỊP */
+        .dice-shake-3step { animation: shake3Step 1.5s ease-in-out forwards; }
+        @keyframes shake3Step {
+            0%, 20%, 40%, 60% { transform: translateY(0); }
+            10%, 30%, 50% { transform: translateY(-40px) rotate(15deg); }
+            70% { transform: translateY(0) rotate(360deg); }
+            100% { transform: translateY(0); }
         }
 
         #bowl { 
             position: absolute; top: -4px; left: -4px; width: 158px; height: 158px; 
             background: radial-gradient(circle, #eee, #999, #333); border-radius: 50%; 
             z-index: 10; display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; color: #222; font-size: 12px; box-shadow: 0 5px 15px #000;
+            font-weight: bold; color: #222; font-size: 14px; box-shadow: 0 5px 15px #000;
             touch-action: none; 
         }
 
@@ -54,7 +52,7 @@
         .chip { height: 32px; border-radius: 12px; border: 1px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 9px; cursor: pointer; color: #fff; background: #34495e; }
         .btn-allin { background: linear-gradient(to bottom, #ff0000, #990000) !important; color: white !important; }
 
-        #win-txt { position: fixed; top: 35%; font-size: 45px; color: var(--gold); font-weight: bold; opacity: 0; pointer-events: none; z-index: 2000; text-shadow: 0 0 20px #000; text-align: center; width: 100%; }
+        #win-txt { position: fixed; top: 40%; font-size: 45px; color: var(--gold); font-weight: bold; opacity: 0; pointer-events: none; z-index: 2000; text-shadow: 0 0 20px #000; text-align: center; width: 100%; }
         .fly { animation: flyText 2.5s forwards; }
         @keyframes flyText { 0% { opacity:0; transform: translateY(0); } 20% { opacity:1; } 100% { opacity:0; transform: translateY(-150px); } }
     </style>
@@ -63,25 +61,24 @@
 
     <audio id="s-shake" src="https://www.soundjay.com/misc/sounds/dice-shake-1.mp3"></audio>
     <audio id="s-win" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
-    <audio id="s-jackpot" src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3"></audio>
+    <audio id="s-tick" src="https://www.soundjay.com/misc/sounds/button-10.mp3"></audio>
 
     <div class="header">
         <div class="top-row">
             <div onclick="location.reload()" style="font-size:22px; color:var(--gold); cursor:pointer;">☰</div>
             <div class="balance">💰 <span id="money">0</span></div>
-            <button class="chip" style="background:var(--green); color:black; padding:0 10px; width:70px;" onclick="napTuyChon()">NẠP</button>
+            <button class="chip" style="background:var(--green); color:black; padding:0 10px; width:70px;" onclick="napTien()">NẠP</button>
         </div>
     </div>
 
     <div id="win-txt">+0</div>
 
-    <div id="taixiu" class="game-screen active-game">
+    <div class="game-screen">
         <div class="timer-box" id="timer">60</div>
-        <div class="md5-txt" id="md5-display">MD5: Loading...</div>
         <div class="history-grid" id="tx-hist"></div>
 
         <div class="table">
-            <div class="bet-grid">
+            <div style="display:flex; width:100%; justify-content:space-around;">
                 <div id="tx-side-xiu" class="bet-side" onclick="setSide('xiu')">
                     <div class="side-name" style="color:var(--blue)">XỈU</div>
                     <div style="font-size:9px; color:var(--gold);">1.25B</div>
@@ -99,6 +96,7 @@
             
             <div style="color:var(--gold); font-size:12px;">Cược của chú bé: <span id="tx-my-bet">0</span></div>
         </div>
+
         <div class="chips" id="tx-chips"></div>
     </div>
 
@@ -113,13 +111,10 @@
         const sec = now.getSeconds();
         const rem = 60 - sec;
         document.getElementById('timer').innerText = rem < 10 ? "0" + rem : rem;
-        
-        // Cập nhật chuỗi MD5 giả lập theo thời gian
-        document.getElementById('md5-display').innerText = "MD5: " + btoa(now.getMinutes() + "_" + now.getHours()).substring(0, 20) + "...";
 
         if (sec < 45) { // 0-45s: Đặt cược
             if (state !== 'betting') reset();
-        } else if (sec === 45 && state === 'betting') { // Giây 45: Nhảy 3 nhịp
+        } else if (sec === 45 && state === 'betting') { // 45s: Hiệu ứng lắc 3 nhịp
             startSecretAnim();
         } else if (sec >= 57) { // 3s cuối tự mở
             if (state === 'playing') forceOpen();
@@ -131,34 +126,28 @@
         state = 'playing';
         document.getElementById('s-shake').play().catch(()=>{});
         
-        // Hiệu ứng nhảy xúc xắc
-        document.querySelectorAll('.dice').forEach(d => d.classList.add('dice-jump'));
+        // Kích hoạt hiệu ứng nhảy xúc xắc
+        document.querySelectorAll('.dice').forEach(d => {
+            d.classList.add('dice-shake-3step');
+        });
 
-        // Thuật toán Random "Ông nội không đoán được"
+        // Thuật toán Random phức tạp của chú bé
         const now = new Date();
-        // Kết hợp hàm Sin và mã băm thời gian để phá vỡ mọi quy luật 3-3
-        const complexSeed = Math.abs(Math.sin(now.getHours() * 3600 + now.getMinutes() * 60 + 45) * 10000);
+        const seed = Math.abs(Math.sin(now.getHours() * 3600 + now.getMinutes() * 60 + 45) * 10000);
+        let r1 = (Math.floor(seed) % 6) + 1;
+        let r2 = (Math.floor(seed * 1.7) % 6) + 1;
+        let r3 = (Math.floor(seed * 2.9) % 6) + 1;
         
-        let r1 = (Math.floor(complexSeed) % 6) + 1;
-        let r2 = (Math.floor(complexSeed * 1.5) % 6) + 1;
-        let r3 = (Math.floor(complexSeed * 2.3) % 6) + 1;
-        
-        // Tỉ lệ nổ hũ cực thấp (chỉ khi 3 viên bằng nhau và thêm 1 lớp random 5%)
-        if(r1 === r2 && r2 === r3 && Math.random() > 0.05) {
-            r3 = (r3 % 6) + 1; // Phá hũ nếu không đủ may mắn
-        }
-
         window.res = (r1+r2+r3) >= 11 ? 'tai' : 'xiu';
-        window.isJackpot = (r1 === r2 && r2 === r3);
-        window.winVal = window.isJackpot ? bet * 10 : bet * 1.95;
+        window.winVal = (r1===r2 && r2===r3) ? bet*10 : bet*1.95;
 
         setTimeout(() => {
             document.getElementById('d1').innerText = dIcons[r1];
             document.getElementById('d2').innerText = dIcons[r2];
             document.getElementById('d3').innerText = dIcons[r3];
             document.getElementById('bowl').innerText = "NẶN ĐI!";
-            document.querySelectorAll('.dice').forEach(d => d.classList.remove('dice-jump'));
-        }, 1200);
+            document.querySelectorAll('.dice').forEach(d => d.classList.remove('dice-shake-3step'));
+        }, 1500); // Đợi lắc xong 1.5s
     }
 
     function forceOpen() { document.getElementById('bowl').style.display = 'none'; finish(); }
@@ -167,16 +156,7 @@
         if(state !== 'playing') return;
         state = 'end';
         document.getElementById('tx-side-' + window.res).classList.add('glow-win');
-        
-        if (side === window.res && bet > 0) {
-            bal += window.winVal;
-            if(window.isJackpot) {
-                document.getElementById('s-jackpot').play();
-                showWin("NỔ HŨ X10: " + window.winVal.toLocaleString());
-            } else {
-                showWin(window.winVal);
-            }
-        }
+        if (side === window.res && bet > 0) { bal += window.winVal; showWin(window.winVal); }
         historyTX.push(window.res);
         localStorage.setItem('casino_bal', bal);
         localStorage.setItem('casino_hist_tx', JSON.stringify(historyTX));
@@ -192,31 +172,41 @@
         updateUI();
     }
 
-    // --- NẶN MOBILE ---
+    // --- FIX NẶN SIÊU NHẠY ---
     const bEl = document.getElementById('bowl');
     let sX, sY;
-    bEl.addEventListener('touchstart', (e) => { if(state==='playing') { sX=e.touches[0].clientX; sY=e.touches[0].clientY; e.preventDefault(); } }, {passive:false});
+    bEl.addEventListener('touchstart', (e) => { 
+        if(state==='playing') { 
+            sX=e.touches[0].clientX; sY=e.touches[0].clientY; 
+            e.preventDefault(); 
+        } 
+    }, {passive:false});
     bEl.addEventListener('touchmove', (e) => {
         if(state!=='playing') return;
         let dx = e.touches[0].clientX-sX, dy = e.touches[0].clientY-sY;
-        bEl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/8}deg)`;
+        bEl.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/10}deg)`;
         if(Math.abs(dx)>80 || Math.abs(dy)>80) { bEl.style.display='none'; finish(); }
     }, {passive:false});
 
-    function napTuyChon() {
-        let val = prompt("Chú bé muốn nạp bao nhiêu xu?");
-        if(val && !isNaN(val)) { bal += parseInt(val); updateUI(); localStorage.setItem('casino_bal', bal); }
+    function setSide(s) { 
+        if(new Date().getSeconds()<45) { 
+            document.getElementById('s-tick').play().catch(()=>{});
+            side=s; 
+            document.querySelectorAll('.bet-side').forEach(el=>el.classList.remove('active-side')); 
+            document.getElementById('tx-side-'+s).classList.add('active-side'); 
+        } 
     }
-    function setSide(s) { if(new Date().getSeconds()<45) { side=s; document.querySelectorAll('.bet-side').forEach(el=>el.classList.remove('active-side')); document.getElementById('tx-side-'+s).classList.add('active-side'); } }
     function updateUI() { document.getElementById('money').innerText = bal.toLocaleString(); document.getElementById('tx-my-bet').innerText = bet.toLocaleString(); }
     function renderHist() {
         const box = document.getElementById('tx-hist'); box.innerHTML = "";
-        historyTX.slice(-30).forEach(r => { let d = document.createElement('div'); d.className = `dot dot-${r}`; d.innerText = r.substring(0,1).toUpperCase(); box.appendChild(d); });
+        historyTX.slice(-20).forEach(r => { let d = document.createElement('div'); d.className = `dot dot-${r}`; d.innerText = r.substring(0,1).toUpperCase(); box.appendChild(d); });
     }
+    function napTien() { let v = prompt("Chú bé nạp bao nhiêu?"); if(v) { bal += parseInt(v); updateUI(); localStorage.setItem('casino_bal', bal); } }
 
     const cBox = document.getElementById('tx-chips');
     [1000, 10000, 100000, 1000000, 5000000].forEach(a => {
-        let d = document.createElement('div'); d.className = 'chip'; d.innerText = a>=1000000 ? (a/1000000)+'M' : (a/1000)+'K';
+        let d = document.createElement('div'); d.className = 'chip';
+        d.innerText = a>=1000000 ? (a/1000000)+'M' : (a/1000)+'K';
         d.onclick = () => { if(new Date().getSeconds()<45 && side && bal>=a) { bal-=a; bet+=a; updateUI(); } };
         cBox.appendChild(d);
     });
@@ -224,13 +214,7 @@
     ai.onclick = () => { if(new Date().getSeconds()<45 && side && bal>0) { bet+=bal; bal=0; updateUI(); } };
     cBox.appendChild(ai);
 
-    function showWin(a) {
-        document.getElementById('s-win').play().catch(()=>{});
-        let t = document.getElementById('win-txt');
-        t.innerText = (typeof a === 'string') ? a : "+" + a.toLocaleString();
-        t.classList.add('fly');
-        setTimeout(() => t.classList.remove('fly'), 2500);
-    }
+    function showWin(a) { document.getElementById('s-win').play().catch(()=>{}); let t = document.getElementById('win-txt'); t.innerText = "+" + a.toLocaleString(); t.classList.add('fly'); setTimeout(() => t.classList.remove('fly'), 2500); }
 
     updateUI(); renderHist(); sync();
 </script>
